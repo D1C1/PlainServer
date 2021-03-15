@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
 
 
 namespace CarJsonClient
@@ -25,7 +26,8 @@ namespace CarJsonClient
                 StreamWriter sw = new StreamWriter(ns);
                 sw.AutoFlush = true;
 
-                sw.WriteLine(car);
+                string jsonToSend = JsonConvert.SerializeObject(car);
+                sw.WriteLine(jsonToSend);
 
                 ns.Close();
                 client.Close();

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using ModelLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace PlainServer
 {
@@ -20,15 +22,14 @@ namespace PlainServer
                 server = new TcpListener(localAddr, port);
                 server.Start();
                 Console.WriteLine("Server started");
-                while (true)
+
+                TcpClient connectionSocket = server.AcceptTcpClient();
+                Task.Run(() =>
                 {
-                    TcpClient connectionSocket = server.AcceptTcpClient();
-                    Task.Run(() =>
-                    {
-                        TcpClient tempSocket = connectionSocket;
-                        DoClient(tempSocket);
-                    });
-                }
+                    TcpClient tempSocket = connectionSocket;
+                    DoClient(tempSocket);
+                });
+
                 server.Stop();
 
             }
@@ -51,7 +52,8 @@ namespace PlainServer
 
             string toread;
             toread = sr.ReadLine();
-            Console.WriteLine(toread);
+            Car newCar = JsonConvert.DeserializeObject<Car>(toread);
+            Console.WriteLine(newCar);
 
             ns.Close();
             connectionSocket.Close();
