@@ -22,13 +22,15 @@ namespace PlainServer
                 server = new TcpListener(localAddr, port);
                 server.Start();
                 Console.WriteLine("Server started");
-
-                TcpClient connectionSocket = server.AcceptTcpClient();
-                Task.Run(() =>
+                while (true)
                 {
-                    TcpClient tempSocket = connectionSocket;
-                    DoClient(tempSocket);
-                });
+                    TcpClient connectionSocket = server.AcceptTcpClient();
+                    Task.Run(() =>
+                    {
+                        TcpClient tempSocket = connectionSocket;
+                        DoClient(tempSocket);
+                    });
+                }
 
                 server.Stop();
 
@@ -53,7 +55,7 @@ namespace PlainServer
             string toread;
             toread = sr.ReadLine();
             Car newCar = JsonConvert.DeserializeObject<Car>(toread);
-            Console.WriteLine(newCar);
+            Console.WriteLine(newCar.Model);
 
             ns.Close();
             connectionSocket.Close();
